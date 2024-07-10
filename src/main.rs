@@ -1,21 +1,14 @@
-use bevy::{
-    prelude::*,
-    sprite::{MaterialMesh2dBundle, Mesh2dHandle},
-};
+use bevy::{color::palettes::css::WHITE_SMOKE, math::VectorSpace, prelude::*};
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
+        .add_systems(Update, draw_grid)
         .run();
 }
 
-fn setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/ARLRDBD.TTF");
 
     commands.spawn(Camera2dBundle::default());
@@ -31,12 +24,15 @@ fn setup(
         ),
         ..default()
     });
+}
 
-    let rhombus = Rhombus::new(100., 100.);
-    let rhombus_handle = Mesh2dHandle(meshes.add(rhombus));
-    commands.spawn(MaterialMesh2dBundle {
-        mesh: rhombus_handle,
-        material: materials.add(Color::hsl(0.0, 0.3, 1.)),
-        ..default()
-    });
+fn draw_grid(mut gizmos: Gizmos) {
+    gizmos.primitive_2d(
+        &Rhombus {
+            half_diagonals: Vec2 { x: 100.0, y: 75.0 },
+        },
+        Vec2::ZERO,
+        0.0,
+        WHITE_SMOKE,
+    );
 }
