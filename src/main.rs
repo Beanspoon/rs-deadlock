@@ -1,6 +1,10 @@
-use std::f32::consts::PI;
-
 use bevy::prelude::*;
+
+// let transform = Mat2::IDENTITY
+//     .mul_mat2(&Mat2::from_scale_angle(Vec2 { x: 0.63, y: 1.0 }, PI / 4.0))
+//     .inverse();
+const ISO_TRANSFORM: Mat2 =
+    Mat2::from_cols_array_2d(&[[1.1223918, -0.7071068], [1.1223918, 0.7071068]]);
 
 fn main() {
     App::new()
@@ -31,15 +35,10 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 fn draw_grid(mut gizmos: Gizmos) {
     for index in 0..36 {
         let colour = Color::hsl(360.0 * index as f32 / 36.0, 0.95, 0.7);
-        let mut transform = Mat3::IDENTITY;
-        transform = transform.mul_mat3(&Mat3::from_angle(PI / 4.0));
-        transform = transform.mul_mat3(&Mat3::from_scale(Vec2 { x: 0.63, y: 1.0 }));
         let car_x = (index % 6) as f32 * 100.0;
         let car_y = (index / 6) as f32 * 100.0;
 
-        let iso_coords: Vec2 = transform
-            .inverse()
-            .transform_vector2(Vec2 { x: car_x, y: car_y });
+        let iso_coords: Vec2 = ISO_TRANSFORM.mul_vec2(Vec2 { x: car_x, y: car_y });
         gizmos.primitive_2d(&Circle { radius: 20.0 }, iso_coords, 0.0, colour);
     }
 }
