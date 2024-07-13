@@ -39,6 +39,13 @@ fn draw_grid(mut gizmos: Gizmos) {
         let car_y = (index / 6) as f32 * 100.0;
 
         let iso_coords: Vec2 = ISO_TRANSFORM.mul_vec2(Vec2 { x: car_x, y: car_y });
-        gizmos.primitive_2d(&Circle { radius: 20.0 }, iso_coords, 0.0, colour);
+        gizmos.primitive_2d(
+            &Rhombus {
+                half_diagonals: Vec2 { x: 100.0, y: 63.0 },
+            },
+            iso_coords,
+            0.0,
+            colour,
+        );
     }
 }
